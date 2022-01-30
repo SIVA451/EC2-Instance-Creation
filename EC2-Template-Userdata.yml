@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template to Create an EC2 instance in a VPC with Userdata
+   
+Parameters:
+  VpcId:
+    Type: String
+    Description: VPC id
+    Default: vpc-02cf27138b9c8f819
+  ImageId:
+    Type: String
+    Description: 'Linux 2 AMI for us-east-1 Region'
+    Default: 'ami-08e4e35cccc6189f4'
+  InstanceType:
+    Type: String
+    Description: Choosing  t2 micro because it is free
+    Default: t2.micro
+  KeyName:
+    Description: SSH Keypair to login to the instance
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: ec2-demo
+#  SubnetID:
+#    Type: String
+#    Description: Subnet id
+#    Default:
+
+Resources:
+  DemoInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties: 
+      ImageId: !Ref ImageId
+      InstanceType: !Ref InstanceType
+      #SubnetId: !Ref SubnetID
+      KeyName: !Ref KeyName
+      SecurityGroupIds: 
+        - !Ref DemoSecurityGroup
+      UserData:
+        Fn::Base64: 
+          !Sub |
+            #!/bin/bash
+            yum update -y
+            yum install -y httpd
+            systemctl start httpd.service
+            systemctl enable httpd.service
+            echo Hello World from $(hostname -f) > /var/www/html/index.html
+      Tags:
+        - Key: Name
+          Value: CFT-pipeline-Instance
+        - Key: ENV
+          Value: Demo
+        - Key: Changeset
+          Value: Yes doing it
+        - Key: Update
+          Value: Yes doing it             
+          
+  DemoSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      VpcId: !Ref VpcId
+      GroupDescription: SG to allow SSH access via port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: '0.0.0.0/0'
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: EC2-CFT-SG
+Outputs:
+  DemoInstanceId:
+    Description: Instance ID
+    Value: !Ref DemoInstance
+
+  DemoSGId:
+    Description: Securitygroup ID
+    Value: !Ref DemoSecurityGroup
