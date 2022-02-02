@@ -17,7 +17,7 @@ Parameters:
   KeyName:
     Description: SSH Keypair to login to the instance
     Type: AWS::EC2::KeyPair::KeyName
-    Default: ec2-demo
+    Default: Demo-1332-account
 #  SubnetID:
 #    Type: String
 #    Description: Subnet id
