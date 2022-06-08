@@ -5,7 +5,7 @@ Parameters:
   VpcId:
     Type: String
     Description: VPC id
-    Default: vpc-02cf27138b9c8f819
+    Default: vpc-0211b4db905971865
   ImageId:
     Type: String
     Description: 'Linux 2 AMI for us-east-1 Region'
