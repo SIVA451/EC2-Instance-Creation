@@ -1,0 +1,15 @@
+version: 0.1
+phases:
+  install:
+    commands:
+      - echo "Installing dependencies..."
+  build:
+    commands:
+      - echo "Building the application..."
+  post_build:
+    commands:
+      - echo "Packaging the application..."
+artifacts:
+  files:
+    - echo "Packaging the artifacts..."
+  discard-paths: yes  # Discard the folder structure
