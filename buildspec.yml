@@ -1,15 +1,13 @@
-version: 0.1
+version: 0.2
 phases:
   install:
     commands:
-      - echo "Installing dependencies..."
+      - echo Installing AWS CLI
+      - yum install -y aws-cli
   build:
     commands:
-      - echo "Building the application..."
-  post_build:
-    commands:
-      - echo "Packaging the application..."
+      - echo Uploading CloudFormation template to S3...
+      - aws s3 cp create-vpc.yml s3://cf-templates-z5q3ztki8ohd-us-west-2/
 artifacts:
   files:
-    - echo "Packaging the artifacts..."
-  discard-paths: yes  # Discard the folder structure
+    - create-vpc.yml
